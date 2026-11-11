@@ -1,0 +1,36 @@
+{
+  "name": "solat-awal-waktu",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "TZ=Asia/Kuala_Lumpur node --test test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Umai960/solat-awal-waktu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Umai960/solat-awal-waktu/issues"
+  },
+  "homepage": "https://github.com/Umai960/solat-awal-waktu#readme",
+  "dependencies": {
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/geolocation": "^7.1.8",
+    "@capacitor/local-notifications": "^7.0.7",
+    "@capacitor/preferences": "^7.0.4",
+    "adhan": "^4.4.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.10",
+    "vite": "^6.4.6"
+  },
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,64 @@
+name: Bina APK
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+
+      - name: Sediakan kunci tandatangan (jika secret KEYSTORE_BASE64 ada)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/app.keystore"
+            echo "KEYSTORE_PATH=$RUNNER_TEMP/app.keystore" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Tiada secret KEYSTORE_BASE64 - APK ditandatangan dengan kunci debug sementara."
+          fi
+
+      - name: Bina APK
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Namakan semula APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk SolatAwalWaktu.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SolatAwalWaktu-apk
+          path: SolatAwalWaktu.apk
+
+      - name: Terbitkan ke Releases (tag "terkini")
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete terkini --yes --cleanup-tag || true
+          gh release create terkini SolatAwalWaktu.apk \
+            --target "${{ github.sha }}" \
+            --title "Solat Awal Waktu (terkini)" \
+            --notes "Muat turun SolatAwalWaktu.apk di bawah dan buka untuk install. Dibina dari ${{ github.ref_name }} @ ${GITHUB_SHA::7}."

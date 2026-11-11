@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Solat Awal Waktu</string>
+    <string name="title_activity_main">Solat Awal Waktu</string>
+    <string name="package_name">com.umai960.solatawalwaktu</string>
+    <string name="custom_url_scheme">com.umai960.solatawalwaktu</string>
+</resources>
